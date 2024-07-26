@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>페이지 구현</title>
+    <style>
+      table{
+        border:1px solid balck;
+        border-collapse: collapse;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="save_ko.php">
+      <label for="fname">이름</label>
+      <input type="text"> <br>
+      <label for="fname">부서</label>
+      <input type="text"> <br>
+      <label for="fname">직책</label>
+      <input type="text"> <br>
+      <label for="fname">사진</label>
+      <input type="button" value="파일 선택">
+      <label for="fname">선택한 파일 없음</label> <br>
+    </form>
+    <br>
+    <input type="button" value="새 사원 추가" style="background-color: red;">
+    <hr />
+    <p>
+      <input style="border-width: medium" type="button" value="선택 삭제" /> | 검색:
+      <select name="이름">
+        <option value="1">이름</option>
+        <option value="2">곽병기</option>
+        <option value="3">안병도</option>
+        <option value="4">정재운</option>
+        <input type="box" />
+      </select>
+    </p>
+    <p>
+      <table id="tabel1" border="1" cellspacing="1" width="100%">
+        <tr style="background-color: orange;">
+          <td><input type="checkbox"></td>
+          <td>번호</td>
+          <td width="30%">사진</td>
+          <td width="15%">사원명</td>
+          <td width="15%">부서</td>
+          <td width="7%">직급</td>
+          <td width="10%">수정</td>
+          <td width="10%">삭제</td>            
+        </tr>
+        <tr>
+          <td rowspan="3" valign="top"><input type="checkbox"></td>
+          <td rowspan="3" valign="top">1043</td>
+          <td><img src="./sky.jfif" alt="" width="200px" height="100px"></td>
+          <td align="left" valign="top">홍길동</td>
+          <td align="left" valign="top">개발</td>
+          <td align="left" valign="top">대리</td>
+          <td rowspan="3" valign="top"><input type="button" value="edit"></td>
+          <td rowspan="3" valign="top"><input type="button" value="delete"></td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <table border="0" cellspacing="1" width="100%">
+              <tr>
+                <td>번호</td>
+                <td>댓글 내용</td>
+                <td>작성자</td>
+                <td>수정</td>
+                <td>삭제</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>멋진 사진입니다.</td>
+                <td>박문수</td>
+                <td>수정</td>
+                <td>삭제</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>좋아요^^ 퍼가요~</td>
+                <td>일지메</td>
+                <td>수정</td>
+                <td>삭제</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" align="center">댓글 <input type="text"> 작성자  <input type="text"> <input type="button" value="댓글입력"/></td>
+        </tr>
+      </table>
+    </p>
+  </body>
+</html>
