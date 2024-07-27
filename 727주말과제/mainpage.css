@@ -1,0 +1,15 @@
+.header {
+  background: url(bg.jpg);
+  background-position: center;
+  background-size: cover;
+  height: 580px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.header .title2 {
+  width: auto;
+}
