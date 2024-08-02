@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="demo">
+      <h1>The XMLHttpRequest Object</h1>
+      <button type="button" onclick="loadDoc()">Change Content</button>
+    </div>
+    <!-- -->
+    <button id="loadBtn">목록 불러오기</button>
+    <ul id="todoListArea"></ul>
+    <script>
+      function loadDoc() {
+        // XMLHttpRequest 대신에 jQuey 라이브러리의 ajax() 함수도 사용 가능
+        // axios 라이브러리 이용 (CDN 또는 설치)
+        // fetch 모듈 (웨 브라우저 표준)
+        // XMLHttpRequest 객체 ( 웹 브라우저 표준)
+        // var은 바뀔 것 같을 때, const는 불변일 때 사용
+
+        // EventTarget <- XMLHttpRequestEventTarget <- XMLHttpRequest
+        const xhttp = new XMLHttpRequest(event);
+        // onreadystatechange(에러까지 확인 할 때 사용) 대신 onload 사용 가능
+        xhttp.onreadystatechange = function () {
+          // 아래 if문은 onreadystatechange를 사용했을 때
+          // httpRequest.readyState==4 이것은 데이터를 전부 받은 상태, 완료되었다
+          // httpRequest.status==200 이것은 서버로부터의 응답상태가 요청에 성공하였다는 의미
+          // onload는 if문 사용 할 필요 없음
+          if (this.readyState == 4 && this.status == 200) {
+            // var doc = xhttp.responseXML;
+            // cnosole.log(doc.querySelectorAll('p')[0]);
+            var todoListTxt = xhttp.responseText;
+            // .으로 접근해도 되고 [] 배열 기호로도 접근 가능
+            var todoList = JSON.parse(todoListTxt)['todoLists'];
+            var noCnt = JSON.parse(todoListTxt)['noCnt'];
+            // document.getElementById('demo').innerHTML = this.responseText;
+            console.log(todoList);
+            console.log(noCnt);
+
+            const todoListArea = document.querySelector('#todoListArea');
+            todoList.forEach((element) => {
+              console.log((todo) => {
+                const liElement = document.createElement('li');
+                liElement.innerHTML = todo.title;
+                todoListArea.appendChild(liElement);
+              });
+            });
+          }
+        };
+        // var method = "GET"
+        // var url = "data.txt"
+        // xhttp = open(method, url) 이렇게도 사용 가능
+        xhttp.open('GET', 'todoList.json', true);
+        xhttp.send();
+      }
+    </script>
+  </body>
+</html>

@@ -45,6 +45,21 @@ app.get('/saram/detail', function (req, res) {
   });
 });
 
+app.get('/saram/edit', function (req, res) {
+  console.log('GET - /saram/edit >>>> no: ' + req.query.no);
+  var idx = saramList.findIndex(function (saram) {
+    return saram.no == req.query.no;
+  });
+  var saram = null;
+  if (idx != -1) {
+    saram = saramList[idx];
+  }
+  req.app.render('saramEdit', { saram }, function (err, html) {
+    res.end(html);
+    ee;
+  });
+});
+
 const server = http.createServer(app);
 server.listen(port, function () {
   console.log('서버 실행 중 >>> http://localhost:' + port);
