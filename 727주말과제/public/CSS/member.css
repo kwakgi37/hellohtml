@@ -1,0 +1,21 @@
+table {
+  border: 1px solid balck;
+  border-collapse: collapse;
+}
+td.modifyBox {
+  display: none;
+}
+
+td.modifyBox1 {
+  display: none;
+}
+td.modifyBox2 {
+  display: none;
+}
+td.modifyBox3 {
+  display: none;
+}
+
+td.modifyBtnBox {
+  display: none;
+}

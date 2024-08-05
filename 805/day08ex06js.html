@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>나이와 요일 입력</h1>
+    <form action="" name="inputForm">
+      나이 입력: <input type="number" name="age" value="0" /> <br />
+      요일 선택:
+      <select name="Week">
+        <option value="1">일</option>
+        <option value="2">월</option>
+        <option value="3">화</option>
+        <option value="4">수</option>
+        <option value="5">목</option>
+        <option value="6">금</option>
+        <option value="7">토</option></select
+      ><br />
+      <input type="submit" value="선택 결과 출력하기" />
+    </form>
+    <hr />
+    <div id="resultBox">결과: ?세는 성인입니다. 오늘은 ?요일입니다.</div>
+    <script>
+      var form = document.querySelector('form[name=inputForm]');
+      var resultBox = document.querySelector('#resultBox');
+
+      form.onsubmit = (event) => {
+        event.preventDefault();
+
+        var age = Number(event.target.age.value);
+        var message = Number(event.target.age.value) > 18 ? '성인' : '미성년자';
+
+        var Week = Number(event.target.Week.value);
+        var dayName = '잘못된 값';
+
+        switch (Week) {
+          case 1:
+            dayName = '일요일';
+            break;
+          case 2:
+            dayName = '월요일';
+            break;
+          case 3:
+            dayName = '화요일';
+            break;
+          case 4:
+            dayName = '수요일';
+            break;
+          case 5:
+            dayName = '목요일';
+            break;
+          case 6:
+            dayName = '금요일';
+            break;
+          case 7:
+            dayName = '토요일';
+            break;
+        }
+
+        resultBox.innerHTML = `결과: ${age}세는 ${message}입니다. 오늘은 ${dayName}입니다.`;
+      };
+    </script>
+  </body>
+</html>

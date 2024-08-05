@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>페이지 구현</title>
+    <link rel="stylesheet" href="./CSS/navbar.css" />
+    <link rel="stylesheet" href="./CSS/member.css" />
+    <script>
+      var memberTblList = [
+        {
+          num: 1,
+          img: './galleryimage/sky.jfif',
+          employeename: '홍길동',
+          department: '개발',
+          position: '대리',
+        },
+      ];
+      var numCnt = 2;
+      var commentList = [
+        { no: 1, cmt: '댓글1', cmtname: '홍길동' },
+        { no: 2, cmt: '댓글2', cmtname: '김길동' },
+      ];
+      var noCnt = 3;
+
+      window.onload = function () {
+        // employeeList 관련
+        var memberTbl = document.querySelector('#memberTbl');
+        var nameTxt = document.getElementById('nameTxt');
+        var depTxt = document.getElementById('depTxt');
+        var positionTxt = document.getElementById('positionTxt');
+        var fileimage = document.getElementById('fileimage');
+        var employeeBtn = document.querySelector('#employeeBtn');
+
+        // commentList 관련
+        var comment = document.querySelector('#comment');
+        var commentTxt = document.getElementById('commentTxt');
+        var commentName = document.getElementById('commentName');
+        var commentBtn = document.querySelector('#commentBtn');
+
+        function employeedrawList() {
+          memberTbl.innerHTML = '';
+          memberTblList.forEach(function (memberTblObj) {
+            console.log(memberTblObj.num, memberTblObj.employeename);
+            memberTbl.innerHTML += `<tr data-num="${memberTblObj.num}">
+              <td rowspan="3" valign="top"><input type="checkbox" /></td>
+              <td rowspan="3" valign="top">${memberTblObj.num}</td>
+              <td><img src="${memberTblObj.img}" width="100"></td>
+              <td align="left" valign="top" class="memberTblBox1">${
+                memberTblObj.employeename
+              }</td>
+              <td class="modifyBox1" style="display: none;">
+                          <input type="text" class="modifyTxt1" value="${
+                            memberTblObj.employeename
+                          }"/></td>
+              <td align="left" valign="top" class="memberTblBox2">${
+                memberTblObj.department
+              }</td>
+              <td class="modifyBox2" style="display: none;">
+                          <input type="text" class="modifyTxt2" value="${
+                            memberTblObj.department
+                          }"/></td>
+              <td align="left" valign="top" class="memberTblBox3">${
+                memberTblObj.position
+              }</td>
+              <td class="modifyBox3" style="display: none;">
+                          <input type="text" class="modifyTxt3" value="${
+                            memberTblObj.position
+                          }"/></td>
+              <td rowspan="3" valign="top" class="memberBtnBox">
+                <button type="button" onclick="editClickHandle1(this)">수정</button>
+              <td rowspan="3" valign="top" class="modifyBtnBox" style="display: none;">
+                <button type="button" class="modifyBtn1">수정완료</button></td>
+              </td>
+              <td rowspan="3" valign="top">
+                <button type="button" onclick="delClickHandle1(this)">삭제</button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <table border="0" cellspacing="1" width="100%">
+                  <thead>
+                    <tr align="center">
+                      <td>번호</td>
+                      <td>댓글 내용</td>
+                      <td>작성자</td>
+                      <td>수정</td>
+                      <td>삭제</td>
+                    </tr>
+                  </thead>
+                  <tbody>${commentdrawList()}</tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" align="center">
+                댓글 <input type="text" class="commentTxt" /> 작성자
+                <input type="text" class="commentName" />
+                <button type="button" class="addcommentBtn">댓글입력</button>
+              </td>
+            </tr>`;
+          });
+        }
+
+        function commentdrawList() {
+          var commentsHTML = '';
+          commentList.forEach(function (commentObj) {
+            console.log(commentObj.no, commentObj.cmt, commentObj.cmtname);
+            commentsHTML += `<tr align="center" data-no="${commentObj.no}">
+                        <td>${commentObj.no}</td>
+                        <td class="commentBox">${commentObj.cmt}</td>
+                        <td class="modifyBox" style="display: none;">
+                          <input type="text" class="modifyTxt" value="${commentObj.cmt}"/><button type="button" class="modifyBtn">수정완료</button></td>
+                        <td>${commentObj.cmtname}</td>
+                        <td><button type="button" class="editcommentBtn">수정</button></td>
+                        <td><button type="button" class="deletecommentBtn">삭제</button></td>
+                    </tr>`;
+          });
+          return commentsHTML;
+        }
+
+        employeedrawList();
+
+        HTMLButtonElement.prototype.delClickHandle1 = function (btn) {
+          var trElement = btn.parentElement.parentElement;
+          var num = trElement.dataset.num;
+          memberTblList = memberTblList.filter(
+            (memberTbl) => memberTbl.num != num
+          );
+          employeedrawList();
+        };
+
+        HTMLButtonElement.prototype.editClickHandle1 = function (btn) {
+          var trElement = btn.parentElement.parentElement;
+          var targetNum = trElement.dataset.num;
+          var idx = memberTblList.findIndex(function (memberTbl) {
+            return targetNum == memberTbl.num;
+          });
+
+          if (idx != -1) {
+            // 각각의 수정 박스를 가져오기
+            var modifyBoxes = trElement.querySelectorAll(
+              '.modifyBox1, .modifyBox2, .modifyBox3'
+            );
+            var memberTblBoxes = trElement.querySelectorAll(
+              '.memberTblBox1, .memberTblBox2, .memberTblBox3'
+            );
+            var modifyBtnBox = trElement.querySelector('.modifyBtnBox');
+            var memberBtnBox = trElement.querySelector('.memberBtnBox');
+
+            // 보이기 및 숨기기 설정
+            modifyBoxes.forEach((box) => (box.style.display = 'table-cell'));
+            memberTblBoxes.forEach((box) => (box.style.display = 'none'));
+            modifyBtnBox.style.display = 'table-cell';
+            memberBtnBox.style.display = 'none';
+
+            // 입력 상자 업데이트
+            trElement.querySelector('.modifyTxt1').value =
+              memberTblList[idx].employeename;
+            trElement.querySelector('.modifyTxt2').value =
+              memberTblList[idx].department;
+            trElement.querySelector('.modifyTxt3').value =
+              memberTblList[idx].position;
+
+            // 수정 완료 버튼 클릭 시 이벤트 핸들러
+            trElement.querySelector('.modifyBtn1').onclick = function (event) {
+              modifyBoxes.forEach((box) => (box.style.display = 'none'));
+              modifyBtnBox.style.display = 'none';
+              memberTblList[idx].employeename =
+                trElement.querySelector('.modifyTxt1').value;
+              memberTblList[idx].department =
+                trElement.querySelector('.modifyTxt2').value;
+              memberTblList[idx].position =
+                trElement.querySelector('.modifyTxt3').value;
+              employeedrawList();
+            };
+          }
+        };
+
+        HTMLButtonElement.prototype.editClickHandle = function (btn) {
+          var trElement = btn.parentElement.parentElement;
+          var targetNo = trElement.dataset.no;
+          var idx = commentList.findIndex(function (comment) {
+            return targetNo == comment.no;
+          });
+
+          if (idx != -1) {
+            var modifyBox = trElement.querySelector('.modifyBox');
+            var commentBox = trElement.querySelector('.commentBox');
+            modifyBox.style.display = 'block';
+            commentBox.style.display = 'none';
+            var modifyTxt = trElement.querySelector('.modifyTxt');
+            modifyTxt.value = commentList[idx].cmt;
+
+            trElement.querySelector('.modifyBtn').onclick = function (event) {
+              modifyBox.style.display = 'none';
+              commentList[idx].cmt = modifyTxt.value;
+              comment.innerHTML = commentdrawList();
+            };
+          }
+        };
+
+        // commentList 내 입력, 수정, 삭제 이벤트
+        memberTbl.addEventListener('click', function (event) {
+          if (event.target.classList.contains('addcommentBtn')) {
+            var trElement = event.target.closest('tr');
+            var commentTxt = trElement.querySelector('.commentTxt');
+            var commentName = trElement.querySelector('.commentName');
+
+            if (commentTxt && commentName) {
+              commentList.push({
+                no: noCnt++,
+                cmt: commentTxt.value,
+                cmtname: commentName.value,
+              });
+              commentTxt.value = '';
+              commentName.value = '';
+
+              employeedrawList();
+            }
+          }
+          if (event.target.classList.contains('deletecommentBtn')) {
+            var trElement = event.target.closest('tr');
+            var no = trElement.dataset.no;
+            commentList = commentList.filter((comment) => comment.no != no);
+            employeedrawList();
+          }
+          if (event.target.classList.contains('editcommentBtn')) {
+            var trElement = event.target.closest('tr');
+            var targetNo = trElement.dataset.no;
+            var idx = commentList.findIndex(function (comment) {
+              return targetNo == comment.no;
+            });
+
+            if (idx != -1) {
+              var modifyBox = trElement.querySelector('.modifyBox');
+              var commentBox = trElement.querySelector('.commentBox');
+              modifyBox.style.display = 'block';
+              commentBox.style.display = 'none';
+              var modifyTxt = trElement.querySelector('.modifyTxt');
+              modifyTxt.value = commentList[idx].cmt;
+
+              trElement.querySelector('.modifyBtn').onclick = function (event) {
+                modifyBox.style.display = 'none';
+                commentList[idx].cmt = modifyTxt.value;
+                employeedrawList();
+              };
+            }
+          }
+        });
+
+        var handleEvent = function (event) {
+          memberTblList.push({
+            num: numCnt++,
+            img: fileimage.value,
+            employeename: nameTxt.value,
+            department: depTxt.value,
+            position: positionTxt.value,
+          });
+          employeedrawList();
+          nameTxt.value = '';
+          depTxt.value = '';
+          positionTxt.value = '';
+          nameTxt.focus();
+        };
+
+        employeeBtn.addEventListener('click', handleEvent);
+      };
+    </script>
+  </head>
+  <body>
+    <div>
+      <h1 class="title">회원 관리 페이지</h1>
+    </div>
+    <div>
+      <nav id="topMenu">
+        <ul>
+          <li>
+            <a class="menulink" href="mainpage.html">Home</a>
+          </li>
+          <li>
+            <a class="menulink" href="profile.html">Profile</a>
+          </li>
+          <li>
+            <a class="menulink" href="gallery.html">Gallery</a>
+          </li>
+          <li>
+            <a class="menulink" href="study.html">Study</a>
+          </li>
+          <li>
+            <a class="menulink" href="todolist.html">Todolist</a>
+          </li>
+          <li>
+            <a class="menulink" href="member.html">Memeber</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div>
+      <table>
+        <tr>
+          <td>이름 <input type="text" id="nameTxt" /></td>
+        </tr>
+        <tr>
+          <td>부서 <input type="text" id="depTxt" /></td>
+        </tr>
+        <tr>
+          <td>직책 <input type="text" id="positionTxt" /></td>
+        </tr>
+        <tr>
+          <td>사진 <input type="file" value="파일 선택" id="fileimage" /></td>
+        </tr>
+      </table>
+      <br />
+      <button type="button" id="employeeBtn">새 사원 추가</button>
+      <br />
+    </div>
+    <hr />
+    <div>
+      <button style="border-width: medium" type="button">선택 삭제</button> |
+      검색:
+      <select name="이름">
+        <option value="1">사원명</option>
+        <option value="2">부서</option>
+        <option value="3">직급</option>
+        <input type="box" id="searchBox" />
+      </select>
+    </div>
+    <br />
+    <div>
+      <table border="1" cellspacing="1" width="100%">
+        <thead>
+          <tr style="background-color: orange">
+            <td><input type="checkbox" /></td>
+            <td>번호</td>
+            <td width="30%">사진</td>
+            <td width="15%">사원명</td>
+            <td width="15%">부서</td>
+            <td width="7%">직급</td>
+            <td width="10%">수정</td>
+            <td width="10%">삭제</td>
+          </tr>
+        </thead>
+        <tbody id="memberTbl"></tbody>
+      </table>
+    </div>
+  </body>
+</html>

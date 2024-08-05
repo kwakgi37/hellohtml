@@ -10,6 +10,79 @@
         border-collapse: collapse;
       }
     </style>
+    <script>
+      var commentList = [
+        { no: 1, cmt: '댓글1', name: '홍길동'},
+        { no: 2, cmt: '댓글2', name: '김길동'}
+      ];
+      var noCnt = 3;
+
+      window.onload = function() {
+        var comment = document.querySelector('#comment');
+        var commentTxt = document.getElementById('commentTxt');
+        var nameTxt = document.getElementById('nameTxt');
+        var commentBtn = document.querySelector('#commentBtn');
+
+        HTMLButtonElement.prototype.delClickHandle = function(btn){
+          console.log('delete');
+          var trElement = btn.parentElement.parentElement;
+          var no = trElement.dataset.no;
+          console.log('delete', trElement.dataset.no);
+          commentList = commentList.filter((comment) => comment.no != no);
+          drawList();
+        }
+        HTMLButtonElement.prototype.editClickHandle = function(btn){
+          console.log('edit');
+          var trElement = btn.parentElement.parentElement;
+          var targetNo = trElement.dataset.no;
+          var idx = commentList.findIndex(function(comment){
+            return targetNo == comment.no;
+          });
+
+          if(idx != -1){
+            var modifyBox = trElement.querySelector('.modifyBox');
+            var commentBox = trElement.querySelector('.commentBox');
+            modifyBox.style.display = "block";
+            commentBox.style.display = "none";
+            var modifyTxt = trElement.querySelector('.modifyTxt');
+            modifyTxt.value = commentList[idx].cmt;
+
+            trElement.querySelector('.modifyBtn').onclick = function(event){
+              modifyBox.style.display = "none";
+              commentList[idx].cmt = modifyTxt.value;
+              drawList();
+            }
+          }
+        }
+
+        function drawList() { 
+          comment.innerHTML= '';
+          commentList.forEach(function(commentObj){
+            console.log(commentObj.no, commentObj.cmt, commentObj.name)
+            comment.innerHTML += `<tr align="center" data-no="${commentObj.no}">
+                        <td>${commentObj.no}</td>
+                        <td class="commentBox">${commentObj.cmt}</td>
+                        <td class ="modifyBox">
+                          <input type="text" class="modifyTxt"/><button type="button" class="modifyBtn">수정완료</button></td>
+                        <td>${commentObj.name}</td>
+                        <td><button type="button" onclick="editClickHandle(this)">수정</button></td>
+                        <td><button type="button" onclick="delClickHandle(this)">삭제</button></td>
+                    </tr>`;
+          })
+        }
+        drawList();
+
+        var handleEvent = function(event){
+          commentList.push({ no: noCnt++, cmt: commentTxt.value, name: nameTxt.value});
+          drawList();
+          commentTxt.value = '';
+          nameTxt.value = '';
+          commentTxt.focus();
+        };
+        commentBtn.addEventListener('click', handleEvent);
+
+      }
+    </script>
   </head>
   <body>
     <form action="save_ko.php">
@@ -21,7 +94,7 @@
       <input type="text"> <br>
       <label for="fname">사진</label>
       <input type="file" value="파일 선택">
-      <label for="fname">선택한 파일 없음</label> <br>
+      <br>
     </form>
     <br>
     <input type="button" value="새 사원 추가" style="background-color: red;">
@@ -46,7 +119,7 @@
           <td width="15%">부서</td>
           <td width="7%">직급</td>
           <td width="10%">수정</td>
-          <td width="10%">삭제</td>            
+          <td width="10%">삭제</td>           
         </tr>
         <tr>
           <td rowspan="3" valign="top"><input type="checkbox"></td>
@@ -61,32 +134,22 @@
         <tr>
           <td colspan="4">
             <table border="0" cellspacing="1" width="100%">
-              <tr>
+              <thead>
+                <tr align="center">
                 <td>번호</td>
                 <td>댓글 내용</td>
                 <td>작성자</td>
                 <td>수정</td>
                 <td>삭제</td>
               </tr>
-              <tr>
-                <td>1</td>
-                <td>멋진 사진입니다.</td>
-                <td>박문수</td>
-                <td>수정</td>
-                <td>삭제</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>좋아요^^ 퍼가요~</td>
-                <td>일지메</td>
-                <td>수정</td>
-                <td>삭제</td>
-              </tr>
+              </thead>
+              <tbody id="comment">
+              </tbody>
             </table>
           </td>
         </tr>
         <tr>
-          <td colspan="4" align="center">댓글 <input type="text"> 작성자  <input type="text"> <input type="button" value="댓글입력"/></td>
+          <td colspan="4" align="center">댓글 <input type="text" id="commentTxt"> 작성자  <input type="text" id="nameTxt"> <button type="button" id="commentBtn">댓글입력</button></td>
         </tr>
       </table>
     </p>

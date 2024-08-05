@@ -20,7 +20,7 @@
 
       document.querySelector('#loadBtn').addEventListener('click', function () {
         // onload 이벤트 핸들러를 콜백으로 사용.
-        myAjax('GET', 'http://localhost:3000/todo', function (event) {
+        myAjax('GET', 'http://localhost:3000/todolist', function (event) {
           var xhr = event.target;
           var todoList = JSON.parse(xhr.responseText.trim());
           console.log(todoList);

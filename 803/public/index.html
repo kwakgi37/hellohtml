@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>페이지 구현</title>
+    <link rel="stylesheet" href="./CSS/navbar.css" />
+    <link rel="stylesheet" href="./CSS/member.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        function fetchMembers() {
+          $.get('/members', function (data) {
+            var memberTbl = $('#memberTbl');
+            memberTbl.empty();
+            data.forEach(function (member) {
+              memberTbl.append(`
+              <tr data-num="${member.num}">
+                <td rowspan="3" valign="top"><input type="checkbox" /></td>
+                <td rowspan="3" valign="top">${member.num}</td>
+                <td><img src="${member.img}" width="100"></td>
+                <td align="left" valign="top" class="memberTblBox1">${member.employeename}</td>
+                <td class="modifyBox1" style="display: none;">
+                  <input type="text" class="modifyTxt1" value="${member.employeename}"/>
+                </td>
+                <td align="left" valign="top" class="memberTblBox2">${member.department}</td>
+                <td class="modifyBox2" style="display: none;">
+                  <input type="text" class="modifyTxt2" value="${member.department}"/>
+                </td>
+                <td align="left" valign="top" class="memberTblBox3">${member.position}</td>
+                <td class="modifyBox3" style="display: none;">
+                  <input type="text" class="modifyTxt3" value="${member.position}"/>
+                </td>
+                <td rowspan="3" valign="top" class="memberBtnBox">
+                  <button type="button" class="editBtn">수정</button>
+                </td>
+                <td rowspan="3" valign="top" class="modifyBtnBox" style="display: none;">
+                  <button type="button" class="modifyBtn1">수정완료</button>
+                </td>
+                <td rowspan="3" valign="top">
+                  <button type="button" class="deleteBtn">삭제</button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <table border="0" cellspacing="1" width="100%">
+                    <thead>
+                      <tr align="center">
+                        <td>번호</td>
+                        <td>댓글 내용</td>
+                        <td>작성자</td>
+                        <td>수정</td>
+                        <td>삭제</td>
+                      </tr>
+                    </thead>
+                    <tbody class="commentTbl"></tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4" align="center">
+                  댓글 <input type="text" class="commentTxt" /> 작성자
+                  <input type="text" class="commentName" />
+                  <button type="button" class="addcommentBtn">댓글입력</button>
+                </td>
+              </tr>
+            `);
+              fetchComments(
+                member.num,
+                memberTbl.find('tr[data-num="' + member.num + '"] .commentTbl')
+              );
+            });
+          });
+        }
+
+        function fetchComments(memberNum, commentTbl) {
+          $.get('/comments', function (data) {
+            commentTbl.empty();
+            data.forEach(function (comment) {
+              commentTbl.append(`
+              <tr align="center" data-no="${comment.no}">
+                <td>${comment.no}</td>
+                <td class="commentBox">${comment.cmt}</td>
+                <td class="modifyBox" style="display: none;">
+                  <input type="text" class="modifyTxt" value="${comment.cmt}"/>
+                  <button type="button" class="modifyBtn">수정완료</button>
+                </td>
+                <td>${comment.cmtname}</td>
+                <td><button type="button" class="editcommentBtn">수정</button></td>
+                <td><button type="button" class="deletecommentBtn">삭제</button></td>
+              </tr>
+            `);
+            });
+          });
+        }
+
+        $(document).on('click', '.addcommentBtn', function () {
+          var trElement = $(this).closest('tr').prev().find('.commentTbl');
+          var commentTxt = $(this).siblings('.commentTxt').val();
+          var commentName = $(this).siblings('.commentName').val();
+          $.post(
+            '/comments',
+            { cmt: commentTxt, cmtname: commentName },
+            function (newComment) {
+              trElement.append(`
+            <tr align="center" data-no="${newComment.no}">
+              <td>${newComment.no}</td>
+              <td class="commentBox">${newComment.cmt}</td>
+              <td class="modifyBox" style="display: none;">
+                <input type="text" class="modifyTxt" value="${newComment.cmt}"/>
+                <button type="button" class="modifyBtn">수정완료</button>
+              </td>
+              <td>${newComment.cmtname}</td>
+              <td><button type="button" class="editcommentBtn">수정</button></td>
+              <td><button type="button" class="deletecommentBtn">삭제</button></td>
+            </tr>
+          `);
+            }
+          );
+        });
+
+        $(document).on('click', '.deleteBtn', function () {
+          var trElement = $(this).closest('tr');
+          var num = trElement.data('num');
+          $.ajax({
+            url: '/members/' + num,
+            type: 'DELETE',
+            success: function () {
+              fetchMembers(); // 데이터를 다시 가져와서 테이블을 업데이트합니다.
+            },
+          });
+        });
+
+        $(document).on('click', '.editBtn', function () {
+          var trElement = $(this).closest('tr');
+          trElement.find('.modifyBox1, .modifyBox2, .modifyBox3').show();
+          trElement
+            .find('.memberTblBox1, .memberTblBox2, .memberTblBox3')
+            .hide();
+          trElement.find('.modifyBtnBox').show();
+          trElement.find('.memberBtnBox').hide();
+
+          trElement
+            .find('.modifyBtn1')
+            .off('click')
+            .on('click', function () {
+              var num = trElement.data('num');
+              var updatedMember = {
+                employeename: trElement.find('.modifyTxt1').val(),
+                department: trElement.find('.modifyTxt2').val(),
+                position: trElement.find('.modifyTxt3').val(),
+              };
+              $.ajax({
+                url: '/members/' + num,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedMember),
+                success: function () {
+                  fetchMembers();
+                },
+              });
+            });
+        });
+
+        $(document).on('click', '.editcommentBtn', function () {
+          var trElement = $(this).closest('tr');
+          var no = trElement.data('no');
+          trElement.find('.modifyBox').show();
+          trElement.find('.commentBox').hide();
+
+          trElement
+            .find('.modifyBtn')
+            .off('click')
+            .on('click', function () {
+              var updatedComment = {
+                cmt: trElement.find('.modifyTxt').val(),
+              };
+              $.ajax({
+                url: '/comments/' + no,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedComment),
+                success: function () {
+                  fetchComments(
+                    trElement.closest('table').prev().data('num'),
+                    trElement.closest('table').find('.commentTbl')
+                  );
+                },
+              });
+            });
+        });
+
+        $(document).on('click', '.deletecommentBtn', function () {
+          var trElement = $(this).closest('tr');
+          var no = trElement.data('no');
+          $.ajax({
+            url: '/comments/' + no,
+            type: 'DELETE',
+            success: function () {
+              fetchComments(
+                trElement.closest('table').prev().data('num'),
+                trElement.closest('table').find('.commentTbl')
+              );
+            },
+          });
+        });
+
+        $('#employeeBtn').click(function () {
+          var newMember = {
+            img: $('#fileimage').val(),
+            employeename: $('#nameTxt').val(),
+            department: $('#depTxt').val(),
+            position: $('#positionTxt').val(),
+          };
+          $.post('/members', newMember, function () {
+            fetchMembers();
+            $('#nameTxt').val('');
+            $('#depTxt').val('');
+            $('#positionTxt').val('');
+            $('#fileimage').val('');
+          });
+        });
+
+        fetchMembers(); // 페이지 로드 시 데이터 가져오기
+      });
+    </script>
+  </head>
+  <body>
+    <div>
+      <h1 class="title">회원 관리 페이지</h1>
+    </div>
+    <div>
+      <table>
+        <tr>
+          <td>이름 <input type="text" id="nameTxt" /></td>
+        </tr>
+        <tr>
+          <td>부서 <input type="text" id="depTxt" /></td>
+        </tr>
+        <tr>
+          <td>직책 <input type="text" id="positionTxt" /></td>
+        </tr>
+        <tr>
+          <td>사진 <input type="file" value="파일 선택" id="fileimage" /></td>
+        </tr>
+      </table>
+      <br />
+      <button type="button" id="employeeBtn">새 사원 추가</button>
+      <br />
+    </div>
+    <hr />
+    <div>
+      <button style="border-width: medium" type="button">선택 삭제</button> |
+      검색:
+      <select name="이름">
+        <option value="1">사원명</option>
+        <option value="2">부서</option>
+        <option value="3">직급</option>
+        <input type="box" id="searchBox" />
+      </select>
+    </div>
+    <br />
+    <div>
+      <table border="1" cellspacing="1" width="100%">
+        <thead>
+          <tr style="background-color: orange">
+            <td><input type="checkbox" /></td>
+            <td>번호</td>
+            <td width="30%">사진</td>
+            <td width="15%">사원명</td>
+            <td width="15%">부서</td>
+            <td width="7%">직급</td>
+            <td width="10%">수정</td>
+            <td width="10%">삭제</td>
+          </tr>
+        </thead>
+        <tbody id="memberTbl"></tbody>
+      </table>
+    </div>
+  </body>
+</html>
