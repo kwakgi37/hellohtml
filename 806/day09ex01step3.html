@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>할 일 입력</h1>
+    <p>
+      할일: <input type="text" class="title" />
+      <button id="saveBtn">SAVE</button>
+    </p>
+    <ul class="resultArea"></ul>
+
+    <script>
+      // CSS 셀렉터를 이용해서 DOM 참조
+      // https://www.w3schools.com/jsref/met_element_queryselector.asp
+      // querySelectALL은 여러개를 List형태로 가져온다.
+      var title = document.querySelector('.title');
+      var saveBtn = document.querySelector('#saveBtn');
+
+      // 할 일 삭제 기능이 가능하도록 Array를 활용 한다.
+      var todoList = [
+        { no: 1, title: 'hello', done: false },
+        { no: 2, title: 'hello', done: true },
+        { no: 3, title: 'hello', done: true },
+        { no: 4, title: 'hello', done: false },
+      ];
+      var noCnt = 5;
+      function drawList() {
+        var listArea = document.querySelector('.resultArea');
+        listArea.innerHTML = ''; // 초기화를 시켜줘야지 다시 렌더링 했을 때 바르게 나옴
+        todoList.forEach(function (todo) {
+          var liTag = document.createElement('li');
+          liTag.style.listStyle = 'none';
+          var checkbox = document.createElement('input');
+          checkbox.setAttribute('type', 'checkbox');
+          if (todo.done == true) {
+            checkbox.setAttribute('checked', 'checked');
+          }
+          var delBtn = document.createElement('button');
+          var spanTag = document.createElement('span');
+          spanTag.innerHTML = todo.title + ' ';
+          delBtn.innerText = 'delete';
+          delBtn.addEventListener('click', function (evnet) {
+            var idx = todoList.findIndex(function (t) {
+              return t.no === todo.no;
+            });
+            if (idx != -1) {
+              todoList.splice(idx, 1);
+              // 지운 후 다시 렌더링
+              drawList();
+            }
+          });
+          liTag.appendChild(checkbox);
+          liTag.appendChild(spanTag);
+          liTag.appendChild(delBtn);
+          listArea.appendChild(liTag);
+        });
+      }
+      drawList();
+      // Array 할일 추가
+      function append() {
+        todoList.push({
+          no: noCnt++,
+          title: title.value,
+          done: false,
+        });
+        drawList();
+        title.value = '';
+        title.focus();
+      }
+      //버튼 이벤트 사용
+      saveBtn.onclick = function (e) {
+        append();
+      };
+
+      // 키 이벤트 사용하기
+      title.onkeydown = function (e) {
+        if (e.keyCode === 13) {
+          append();
+        }
+      };
+    </script>
+  </body>
+</html>

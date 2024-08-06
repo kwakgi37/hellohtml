@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>할 일 입력</h1>
+    <p>
+      할일: <input type="text" class="title" />
+      <button id="saveBtn">SAVE</button>
+      <button id="deleteBtn">DELETE</button>
+    </p>
+    <ul class="resultArea"></ul>
+
+    <script>
+      // CSS 셀렉터를 이용해서 DOM 참조
+      // https://www.w3schools.com/jsref/met_element_queryselector.asp
+      // querySelectALL은 여러개를 List형태로 가져온다.
+      var title = document.querySelector('.title');
+      var saveBtn = document.querySelector('#saveBtn');
+      var deleteBtn = document.querySelector('#deleteBtn');
+
+      // 단순 텍스트를 추가 하는 형식을 <li> 태그로 변경
+      function append() {
+        var listArea = document.querySelector('.resultArea');
+        listArea.innerHTML += `<li>${title.value}</li>`;
+        title.value = '';
+        title.fucus();
+      }
+      saveBtn.onclick = function () {
+        append();
+      };
+
+      // 키 이벤트 사용하기
+      title.onkeydown = function (e) {
+        if (e.keyCode === 13) {
+          append();
+        }
+      };
+      deleteBtn.onclick = function () {};
+    </script>
+  </body>
+</html>

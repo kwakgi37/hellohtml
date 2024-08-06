@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>할 일 입력</h1>
+    <p>
+      할일: <input type="text" class="title" />
+      <button id="saveBtn">SAVE</button>
+    </p>
+    <ul class="resultArea"></ul>
+
+    <script>
+      // CSS 셀렉터를 이용해서 DOM 참조
+      // https://www.w3schools.com/jsref/met_element_queryselector.asp
+      // querySelectALL은 여러개를 List형태로 가져온다.
+      var title = document.querySelector('.title');
+      var saveBtn = document.querySelector('#saveBtn');
+
+      var todoList = [{ no: 1, title: 'hello', done: false }];
+      var noCnt = 2;
+      // 확인
+      // 버튼 이벤트 핸들러
+      // 익명함수로 이벤트 핸들러 만들기
+
+      function drawList() {
+        var listArea = document.querySelector('.resultArea');
+        listArea.innerHTML = '';
+        todoList.forEach(function (todo) {
+          var liTag = document.createElement('li');
+          var delBtn = document.createElement('button');
+          var checkBox = document.createElement('input');
+          checkBox.setAttribute('type', 'checkbox');
+          liTag.innerText = todo.title + ' ';
+          delBtn.innerText = 'delete';
+          delBtn.addEventListener('click', function (event) {
+            var idx = todoList.findIndex(function (t) {
+              return t.no == todo.no;
+            });
+            if (idx != -1) {
+              todoList.splice(idx, 1);
+              drawList();
+            }
+          });
+          liTag.appendChild(delBtn);
+          listArea.appendChild(liTag);
+        });
+      }
+
+      drawList();
+      function append() {
+        todoList.push({
+          no: noCnt++,
+          title: title.value,
+          done: false,
+        });
+        drawList();
+        title.value = '';
+      }
+      saveBtn.onclick = function () {
+        append();
+      };
+
+      // 키 이벤트 사용하기
+      title.onkeydown = function (e) {
+        if (e.keyCode === 13) {
+          append();
+        }
+      };
+    </script>
+  </body>
+</html>

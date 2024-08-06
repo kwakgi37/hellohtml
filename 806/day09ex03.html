@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Class2</title>
+  </head>
+  <body>
+    <script>
+      function Animal(name, sound) {
+        this.name = name;
+        this.sound = sound;
+      }
+      Animal.prototype.mkSound = function () {
+        console.log(`${this.name}이/가 ${this.sound} 소리를 내며 운다`);
+      };
+
+      function Dog(name, sound, age) {
+        Animal.call(this, name, sound);
+        this.age = age;
+      }
+      Dog.prototype = Object.create(Animal.prototype);
+      Dog.prototype.constructor = Dog;
+      Dog.prototype.mkSound = function () {
+        Animal.prototype.mkSound.call(this);
+        console.log(this.age);
+      };
+
+      function Cat(name, sound, age) {
+        Animal.call(this, name, sound);
+        this.age = age;
+      }
+      Cat.prototype = Object.create(Animal.prototype);
+      Cat.prototype.constructor = Cat;
+
+      new Dog('바둑', '깽꺵', '12').mkSound();
+    </script>
+  </body>
+</html>

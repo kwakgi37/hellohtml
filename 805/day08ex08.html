@@ -9,7 +9,7 @@
     <p>다음에서 시스템이 만든 숫자를 선택하세요.</p>
     <p id="status">결과:</p>
     <div id="btns"></div>
-
+    <button type="button" id="resetBtn">다시 시작</button>
     <script>
       // 1보다 작은 난수 발생
       // parseInt() 문자열로 된 숫자를 숫자로 변환 "55" ==> 55
@@ -32,7 +32,7 @@
 
       let btns = document.querySelector('#btns');
       let status = document.querySelector('#status');
-
+      var resetBtn = document.querySelector('#resetBtn');
       function draw() {
         // 반복문 실행 전 요소를 초기화 해야한다.
         btns.innerHTML = '';
@@ -72,8 +72,17 @@
           };
         }
       }
-
       draw();
+      resetBtn.onclick = function () {
+        console.log('다시 시작');
+        min = 1;
+        max = 100;
+        num = getRandInt(min, max);
+        cnt = 5;
+        console.log('num =>', num);
+        status.innerHTML = `게임을 다시 실행 합니다.`;
+        draw();
+      };
     </script>
   </body>
 </html>
