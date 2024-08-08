@@ -20,8 +20,13 @@
       var title = document.querySelector('.title');
       var saveBtn = document.querySelector('#saveBtn');
 
-      var todoList = [{ no: 1, title: 'hello', done: false }];
-      var noCnt = 2;
+      var todoList = [
+        { no: 1, title: 'hello', done: false },
+        { no: 2, title: 'hello', done: true },
+        { no: 3, title: 'hello', done: true },
+        { no: 4, title: 'hello', done: false },
+      ];
+      var noCnt = 5;
       // 확인
       // 버튼 이벤트 핸들러
       // 익명함수로 이벤트 핸들러 만들기
@@ -31,10 +36,15 @@
         listArea.innerHTML = '';
         todoList.forEach(function (todo) {
           var liTag = document.createElement('li');
+          liTag.style.listStyle = 'none';
           var delBtn = document.createElement('button');
+          var spanTag = document.createElement('span');
           var checkBox = document.createElement('input');
           checkBox.setAttribute('type', 'checkbox');
-          liTag.innerText = todo.title + ' ';
+          if (todo.done == true) {
+            checkBox.setAttribute('checked', 'checked');
+          }
+          spanTag.innerText = todo.title + ' ';
           delBtn.innerText = 'delete';
           delBtn.addEventListener('click', function (event) {
             var idx = todoList.findIndex(function (t) {
@@ -45,6 +55,8 @@
               drawList();
             }
           });
+          liTag.appendChild(checkBox);
+          liTag.appendChild(spanTag);
           liTag.appendChild(delBtn);
           listArea.appendChild(liTag);
         });

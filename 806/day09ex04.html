@@ -45,11 +45,13 @@
   <body>
     <h1>햄버거하우스 게임</h1>
     <button id="startBtn">START</button><button id="stopBtn">STOP</button>
+    <p id="result">결과:</p>
     <hr />
     <div id="box"></div>
 
     <script>
       // 자신감과 성취감이 일을 하게 한다.
+      var result = document.getElementById('result');
       function Box() {}
       Box.prototype = Object.create(HTMLDivElement.prototype);
       Box.prototype.constructor = Box;
@@ -105,6 +107,11 @@
         new Box(),
         new Box(),
       ];
+      const metrixArr = [
+        [boxArr[0], boxArr[1], boxArr[2]],
+        [boxArr[3], boxArr[4], boxArr[5]],
+        [boxArr[6], boxArr[7], boxArr[8]],
+      ];
       for (var i = 0; i < boxArr.length; i++) {
         const newBox = boxArr[i].init();
         divBox.appendChild(newBox);
@@ -117,9 +124,24 @@
         });
       });
       stopBtn.addEventListener('click', function (event) {
-        boxArr.forEach(function (box) {
-          box.stop();
-        });
+        metrixArr[0][0].stop();
+        metrixArr[0][1].stop();
+        metrixArr[0][2].stop();
+        console.log(
+          metrixArr[0][0].yPos,
+          metrixArr[0][1].yPos,
+          metrixArr[0][2].yPos
+        );
+        setTimeout(function () {
+          metrixArr[1][0].stop();
+          metrixArr[1][1].stop();
+          metrixArr[1][2].stop();
+        }, 500);
+        setTimeout(function () {
+          metrixArr[2][0].stop();
+          metrixArr[2][1].stop();
+          metrixArr[2][2].stop();
+        }, 1000);
       });
     </script>
   </body>
